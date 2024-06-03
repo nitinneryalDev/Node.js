@@ -1,28 +1,21 @@
-const express = require("express");
-const path = require('path')
-const app = express();
-const publicPath = path.join(__dirname , 'public')
+const DBcollection = require('./mongodb')
 
 
-const reqFilter = ( req , res , next ) =>  {
 
-    if(!req.query.age) {
-        res.send('please provide age')
-    } else if(req.query.age < 18 )  {
+DBcollection().then((resp) => {
+  resp
+    .find({ name: "nord" })
+    .toArray()
+    .then((data) => {
+      console.log(data);
+    });
+});
 
-        res.send('you canot access this page')
-        
-        
-    } else {
-        next();
-    }
-    
+
+const main = async () => {
+  let  data = await DBcollection();
+  data = await  data.find().toArray();
+  console.log(data)
 }
-app.use(reqFilter)
 
-app.get('/'  , (req , res) => {
-    res.send('Welcome to Home page')
-} )
-
-
-app.listen(5000);
+main()
